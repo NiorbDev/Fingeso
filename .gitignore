@@ -1,0 +1,49 @@
+# Configuracion local y asistentes de IA
+.codex/
+.agents/
+.claude/
+.cursor/
+.continue/
+.aider*
+AGENTS.md
+CLAUDE.md
+.github/copilot-instructions.md
+
+# Secretos y configuracion local
+.env
+.env.*
+!.env.example
+*.local
+*.pem
+*.key
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+*.tsbuildinfo
+
+# Backend
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+*.class
+
+# Herramientas locales descargadas
+.tools/
+
+# IDE y sistema operativo
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs y temporales
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.swp
+
