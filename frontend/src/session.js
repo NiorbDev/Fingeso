@@ -13,12 +13,9 @@ export const session = {
   isAuthenticated: computed(() => Boolean(state.user)),
   async login(email, password) {
     state.isLoading = true
-    try {
-      state.user = await api.login(email, password)
-      sessionStorage.setItem('pgt-user', JSON.stringify(state.user))
-    } finally {
-      state.isLoading = false
-    }
+    state.user = await api.login(email, password)
+    sessionStorage.setItem('pgt-user', JSON.stringify(state.user))
+    state.isLoading = false
   },
   logout() {
     state.user = null

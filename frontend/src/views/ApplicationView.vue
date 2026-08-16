@@ -14,7 +14,6 @@ const message = ref('')
 const accepted = ref(false)
 const confirmationOpen = ref(false)
 const submitting = ref(false)
-const submitError = ref('')
 const attempted = ref(false)
 const members = reactive([{ name: '', email: '' }])
 
@@ -47,25 +46,19 @@ function requestConfirmation() {
 
 async function confirmApplication() {
   submitting.value = true
-  submitError.value = ''
-  try {
-    const application = await api.createApplication({
-      studentId: session.state.user.id,
-      topicId: topic.value.id,
-      modality: modality.value,
-      message: message.value.trim(),
-      members: [
-        { name: session.state.user.name, email: session.state.user.email },
-        ...(modality.value === 'GROUP' ? validMembers.value : []),
-      ],
-    })
-    confirmationOpen.value = false
-    await router.push({ path: '/mis-postulaciones', query: { enviada: application.id } })
-  } catch (error) {
-    submitError.value = error.message
-  } finally {
-    submitting.value = false
-  }
+  const application = await api.createApplication({
+    studentId: session.state.user.id,
+    topicId: topic.value.id,
+    modality: modality.value,
+    message: message.value.trim(),
+    members: [
+      { name: session.state.user.name, email: session.state.user.email },
+      ...(modality.value === 'GROUP' ? validMembers.value : []),
+    ],
+  })
+  confirmationOpen.value = false
+  submitting.value = false
+  await router.push({ path: '/mis-postulaciones', query: { enviada: application.id } })
 }
 </script>
 
@@ -165,7 +158,6 @@ async function confirmApplication() {
           <h2 id="confirm-title">¿Enviar esta postulación?</h2>
           <p>Se registrará con fecha y hora, el cupo quedará reservado y {{ topic.professor }} recibirá una notificación.</p>
           <div class="confirm-modal__topic"><span>{{ topic.code }}</span><strong>{{ topic.title }}</strong></div>
-          <p v-if="submitError" class="form-error" role="alert">{{ submitError }}</p>
           <div class="confirm-modal__actions">
             <button class="button button--paper" :disabled="submitting" @click="confirmationOpen = false">VOLVER A REVISAR</button>
             <button class="button button--primary" :disabled="submitting" @click="confirmApplication">{{ submitting ? 'ENVIANDO…' : 'SÍ, ENVIAR' }} <Send :size="18" /></button>

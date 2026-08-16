@@ -8,7 +8,6 @@ import cl.usach.pgt.dto.ApplicationRequest;
 import cl.usach.pgt.dto.ApplicationResponse;
 import cl.usach.pgt.dto.AuthRequest;
 import cl.usach.pgt.dto.MemberRequest;
-import cl.usach.pgt.exception.BusinessRuleException;
 import cl.usach.pgt.repository.NotificationRepository;
 import cl.usach.pgt.repository.ThesisTopicRepository;
 import cl.usach.pgt.repository.UserAccountRepository;
@@ -64,8 +63,7 @@ class ApplicationFlowIntegrationTest {
                 student.getId(), topic.getId(), ApplicationModality.GROUP,
                 "Quiero postular en modalidad grupal para desarrollar esta propuesta académica.",
                 List.of(new MemberRequest(student.getName(), student.getEmail())))))
-                .isInstanceOf(BusinessRuleException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("al menos dos integrantes");
     }
 }
-

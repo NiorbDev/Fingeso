@@ -13,8 +13,6 @@ import cl.usach.pgt.domain.UserRole;
 import cl.usach.pgt.dto.ApplicationRequest;
 import cl.usach.pgt.dto.ApplicationResponse;
 import cl.usach.pgt.dto.MemberRequest;
-import cl.usach.pgt.exception.BusinessRuleException;
-import cl.usach.pgt.exception.ResourceNotFoundException;
 import cl.usach.pgt.repository.AuditEntryRepository;
 import cl.usach.pgt.repository.NotificationRepository;
 import cl.usach.pgt.repository.ThesisApplicationRepository;
@@ -44,21 +42,21 @@ public class ApplicationService {
     @Transactional
     public ApplicationResponse create(ApplicationRequest request) {
         UserAccount student = users.findById(request.studentId())
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró al estudiante."));
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró al estudiante."));
         if (student.getRole() != UserRole.STUDENT) {
-            throw new BusinessRuleException("Solo un estudiante puede postular a un tema de tesis.");
+            throw new IllegalArgumentException("Solo un estudiante puede postular a un tema de tesis.");
         }
         if (student.hasActiveThesis()) {
-            throw new BusinessRuleException("Ya no puede optar a las postulaciones porque tiene una tesis asignada.");
+            throw new IllegalArgumentException("Ya no puede optar a las postulaciones porque tiene una tesis asignada.");
         }
 
         ThesisTopic topic = topics.findByIdForUpdate(request.topicId())
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el tema seleccionado."));
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró el tema seleccionado."));
         if (topic.getStatus() != TopicStatus.AVAILABLE || topic.getAvailableSlots() < request.members().size()) {
-            throw new BusinessRuleException("El tema ya no tiene cupos suficientes para esta postulación.");
+            throw new IllegalArgumentException("El tema ya no tiene cupos suficientes para esta postulación.");
         }
         if (applications.existsByStudentIdAndTopicIdAndState(student.getId(), topic.getId(), ApplicationState.PENDING)) {
-            throw new BusinessRuleException("Ya tienes una postulación pendiente para este tema.");
+            throw new IllegalArgumentException("Ya tienes una postulación pendiente para este tema.");
         }
 
         validateComposition(request, student);
@@ -78,7 +76,7 @@ public class ApplicationService {
 
     @Transactional(readOnly = true)
     public List<ApplicationResponse> listForStudent(Long studentId) {
-        if (!users.existsById(studentId)) throw new ResourceNotFoundException("No se encontró al estudiante.");
+        if (!users.existsById(studentId)) throw new IllegalArgumentException("No se encontró al estudiante.");
         return applications.findByStudentIdOrderByCreatedAtDesc(studentId)
                 .stream().map(ApplicationResponse::from).toList();
     }
@@ -86,21 +84,20 @@ public class ApplicationService {
     private void validateComposition(ApplicationRequest request, UserAccount student) {
         int size = request.members().size();
         if (request.modality() == ApplicationModality.INDIVIDUAL && size != 1) {
-            throw new BusinessRuleException("Una postulación individual debe incluir solamente al estudiante actual.");
+            throw new IllegalArgumentException("Una postulación individual debe incluir solamente al estudiante actual.");
         }
         if (request.modality() == ApplicationModality.GROUP && size < 2) {
-            throw new BusinessRuleException("Una postulación grupal debe incluir al menos dos integrantes.");
+            throw new IllegalArgumentException("Una postulación grupal debe incluir al menos dos integrantes.");
         }
         if (!request.members().getFirst().email().equalsIgnoreCase(student.getEmail())) {
-            throw new BusinessRuleException("El primer integrante debe corresponder al estudiante que inició sesión.");
+            throw new IllegalArgumentException("El primer integrante debe corresponder al estudiante que inició sesión.");
         }
         for (MemberRequest member : request.members()) {
             if (!member.email().trim().toLowerCase().endsWith("@usach.cl")) {
-                throw new BusinessRuleException("Todos los integrantes deben usar un correo institucional @usach.cl.");
+                throw new IllegalArgumentException("Todos los integrantes deben usar un correo institucional @usach.cl.");
             }
         }
         long uniqueEmails = request.members().stream().map(member -> member.email().trim().toLowerCase()).distinct().count();
-        if (uniqueEmails != size) throw new BusinessRuleException("No puedes repetir integrantes en la postulación.");
+        if (uniqueEmails != size) throw new IllegalArgumentException("No puedes repetir integrantes en la postulación.");
     }
 }
-

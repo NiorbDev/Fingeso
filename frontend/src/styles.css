@@ -122,10 +122,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .field-label { margin: 14px 0 7px; font-size: .63rem; font-weight: 800; letter-spacing: .13em; }
 .input-frame { min-height: 56px; display: flex; align-items: center; gap: 12px; border: 2px solid var(--black); padding: 0 15px; background: var(--white); box-shadow: 4px 4px 0 transparent; transition: box-shadow .15s, transform .15s; }
 .input-frame:focus-within { transform: translate(-2px,-2px); box-shadow: var(--shadow-small); }
-.input-frame--error { border-color: var(--danger); }
 .input-frame input { width: 100%; border: 0; outline: 0; background: transparent; font-weight: 600; }
 .input-frame button { width: 36px; height: 42px; display: grid; place-items: center; border: 0; background: transparent; cursor: pointer; }
-.form-error { margin: 12px 0 0; border-left: 4px solid var(--danger); padding: 8px 12px; background: #ffe3df; color: #821d1d; font-size: .75rem; font-weight: 700; }
 .button--login { width: 100%; justify-content: space-between; margin-top: 25px; padding-inline: 20px; }
 .demo-ticket { position: relative; display: grid; grid-template-columns: 98px 1fr; align-items: center; margin-top: 28px; border: 2px dashed var(--ink); background: #e7e2d7; }
 .demo-ticket > span { height: 100%; display: grid; place-items: center; background: var(--orange); border-right: 2px dashed var(--ink); font-size: .61rem; font-weight: 800; letter-spacing: .08em; writing-mode: horizontal-tb; }
@@ -354,7 +352,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .confirm-modal__close { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; display: grid; place-items: center; border: 2px solid var(--black); background: var(--white); cursor: pointer; }
 .confirm-modal__icon { width: 62px; height: 62px; display: grid; place-items: center; margin-bottom: 20px; border: 3px solid var(--black); background: var(--orange); box-shadow: var(--shadow-small); }
 .confirm-modal h2 { margin: 0; font-family: var(--font-display); font-size: 2rem; letter-spacing: -.045em; }
-.confirm-modal > p:not(.eyebrow, .form-error) { color: var(--muted); }
+.confirm-modal > p:not(.eyebrow) { color: var(--muted); }
 .confirm-modal__topic { display: grid; gap: 4px; border: 2px solid var(--black); padding: 13px; background: var(--white); }
 .confirm-modal__topic span { color: var(--teal-dark); font-size: .6rem; font-weight: 800; letter-spacing: .09em; }
 .confirm-modal__topic strong { font-size: .75rem; }

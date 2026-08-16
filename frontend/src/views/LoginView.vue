@@ -9,16 +9,10 @@ const router = useRouter()
 const email = ref('estudiante@usach.cl')
 const password = ref('usach2026')
 const showPassword = ref(false)
-const error = ref('')
 
 async function submit() {
-  error.value = ''
-  try {
-    await session.login(email.value, password.value)
-    await router.push('/inicio')
-  } catch (loginError) {
-    error.value = loginError.message
-  }
+  await session.login(email.value, password.value)
+  await router.push('/inicio')
 }
 </script>
 
@@ -55,13 +49,13 @@ async function submit() {
         </div>
 
         <label class="field-label" for="email">CORREO INSTITUCIONAL</label>
-        <div class="input-frame" :class="{ 'input-frame--error': error }">
+        <div class="input-frame">
           <Mail :size="20" />
           <input id="email" v-model="email" type="email" autocomplete="username" required />
         </div>
 
         <label class="field-label" for="password">CONTRASEÑA</label>
-        <div class="input-frame" :class="{ 'input-frame--error': error }">
+        <div class="input-frame">
           <LockKeyhole :size="20" />
           <input
             id="password"
@@ -75,8 +69,6 @@ async function submit() {
             <Eye v-else :size="20" />
           </button>
         </div>
-
-        <p v-if="error" class="form-error" role="alert">{{ error }}</p>
 
         <button class="button button--primary button--login" :disabled="session.state.isLoading">
           <span>{{ session.state.isLoading ? 'VALIDANDO ACCESO…' : 'INGRESAR A LA PLATAFORMA' }}</span>
