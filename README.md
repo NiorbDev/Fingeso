@@ -85,13 +85,15 @@ frontend/
     components/   Piezas visuales reutilizables
     views/        Pantallas completas
 
-backend/src/main/java/cl/usach/pgt/
-  controller/     Recibe las peticiones HTTP
-  service/        Contiene las reglas del caso de uso
-  domain/         Representa los datos guardados
-  repository/     Accede a PostgreSQL
-  dto/            Datos que entran y salen de la API
-  config/         Carga los datos de demostración
+backend/
+  src/pgt/
+    controller/   Recibe las peticiones HTTP
+    service/      Contiene las reglas del caso de uso
+    domain/       Representa los datos guardados
+    repository/   Accede a PostgreSQL
+    dto/          Datos que entran y salen de la API
+    config/       Carga los datos de demostración
+  resources/      Configuración local y conexión a PostgreSQL
 ```
 
 La información incluida es demostrativa y se carga automáticamente cuando la base de datos está vacía.

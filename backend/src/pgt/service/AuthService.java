@@ -1,0 +1,32 @@
+package pgt.service;
+
+import pgt.domain.UserAccount;
+import pgt.dto.AuthRequest;
+import pgt.dto.AuthResponse;
+import pgt.repository.UserAccountRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthService {
+    private final UserAccountRepository users;
+    private final PasswordEncoder passwordEncoder;
+
+    public AuthService(UserAccountRepository users, PasswordEncoder passwordEncoder) {
+        this.users = users;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public AuthResponse login(AuthRequest request) {
+        String email = request.email().trim().toLowerCase();
+        if (!email.endsWith("@usach.cl")) {
+            throw new IllegalArgumentException("El acceso está restringido a correos institucionales registrados.");
+        }
+        UserAccount user = users.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new IllegalArgumentException("El correo o la clave no son correctos."));
+        if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
+            throw new IllegalArgumentException("El correo o la clave no son correctos.");
+        }
+        return AuthResponse.from(user);
+    }
+}
